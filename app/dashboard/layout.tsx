@@ -1,8 +1,20 @@
-'use client'
+import Sidebar from '@/components/layout/Sidebar'
+import Topbar from '@/components/layout/Topbar'
 
-import type { ReactNode } from 'react'
-import DashboardLayout from '@/components/layout/DashboardLayout'
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar on the left */}
+      <Sidebar />
 
-export default function DashboardSectionLayout({ children }: { children: ReactNode }) {
-  return <DashboardLayout>{children}</DashboardLayout>
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col">
+        <Topbar />
+
+        <main className="p-4 flex-1 overflow-y-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  )
 }
