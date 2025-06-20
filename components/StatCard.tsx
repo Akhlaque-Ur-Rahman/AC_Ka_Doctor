@@ -1,93 +1,63 @@
 'use client'
 
-import { useEffect } from 'react'
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
+import { ReactNode } from 'react'
+
+export interface StatCardProps {
+  title: string
+  label: string
+  value: number
+  icon: ReactNode
+  color: string // Tailwind color string e.g. 'blue', 'green'
+  data: number[] // For mini line chart
+}
 
 export default function StatCard({
+  title,
   label,
   value,
   icon,
   color,
   data,
-}: {
-  label: string
-  value: number
-  icon: React.ReactNode
-  color: 'blue' | 'green' | 'purple'
-  data: number[]
-}) {
-  const colorMap = {
-    blue: 'bg-blue-100 text-blue-700',
-    green: 'bg-green-100 text-green-600',
-    purple: 'bg-purple-100 text-purple-700',
+}: StatCardProps) {
+  // Generate SVG path string for mini chart
+  const generateMiniChartPath = () => {
+    if (!data || data.length === 0) return ''
+
+    const maxVal = Math.max(...data)
+    const minVal = Math.min(...data)
+    const height = 30
+    const width = 60
+    const step = width / (data.length - 1 || 1)
+
+    return data
+      .map((point, i) => {
+        const x = i * step
+        const y = height - ((point - minVal) / (maxVal - minVal || 1)) * height
+        return `${i === 0 ? 'M' : 'L'}${x},${y}`
+      })
+      .join(' ')
   }
-
-  const chartColor = {
-    blue: '#3B82F6',
-    green: '#10B981',
-    purple: '#8B5CF6',
-  }
-
-  const count = useMotionValue(0)
-  const rounded = useTransform(count, (v) => Math.floor(v).toLocaleString())
-
-  useEffect(() => {
-    animate(count, value, { duration: 1.2 })
-  }, [value])
-
-  const chartData = Array.isArray(data)
-    ? data.map((v, i) => ({ name: `D${i + 1}`, value: v }))
-    : []
-
-  const gradientId = `gradient-${label.toLowerCase().replace(/\s+/g, '-')}`
 
   return (
-    <div className="bg-white shadow-sm rounded-lg p-5 space-y-2 w-full">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-full ${colorMap[color]}`}>{icon}</div>
-          <p className="text-sm text-gray-500">{label}</p>
-        </div>
-        <motion.p className={`text-lg font-semibold ${colorMap[color].split(' ')[1]}`}>
-          {rounded}
-        </motion.p>
+    <div className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
+      <div>
+        <h4 className="text-sm text-gray-500">{title}</h4>
+        <p className="text-xl font-semibold text-gray-800">{value}</p>
+        <p className="text-xs text-gray-400">{label}</p>
       </div>
 
-      <div className="h-24 -ml-4">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData}>
-            <defs>
-              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={chartColor[color]} stopOpacity={0.8} />
-                <stop offset="100%" stopColor={chartColor[color]} stopOpacity={0.2} />
-              </linearGradient>
-            </defs>
+      <div className="flex flex-col items-end gap-2">
+        <div className={`text-${color}-500`}>{icon}</div>
 
-            <XAxis dataKey="name" hide />
-            <Tooltip
-              cursor={{ fill: 'transparent' }}
-              contentStyle={{
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                border: 'none',
-              }}
-              labelFormatter={() => ''}
-              formatter={(value) => [`${value}`, label]}
-            />
-            <Bar
-              dataKey="value"
-              fill={`url(#${gradientId})`}
-              radius={[6, 6, 0, 0]}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        {/* Mini line chart */}
+        <svg width="60" height="30" viewBox="0 0 60 30" fill="none">
+          <path
+            d={generateMiniChartPath()}
+            stroke={`#3b82f6`} // optional: can derive from `color`
+            strokeWidth="2"
+            fill="none"
+          />
+        </svg>
       </div>
     </div>
   )

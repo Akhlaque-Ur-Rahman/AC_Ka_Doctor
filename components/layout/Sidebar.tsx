@@ -1,118 +1,113 @@
 'use client'
 
-import { useEffect } from 'react'
-import { usePathname } from 'next/navigation'
+import { Home, Users, BarChart2, LogOut, X } from 'lucide-react'
 import Link from 'next/link'
-import {
-  Home,
-  Users,
-  BarChart,
-  Globe,
-  Settings,
-  LogOut,
-  PanelLeftClose,
-  PanelLeftOpen,
-} from 'lucide-react'
-import { useSidebar } from '@/hooks/useSidebar'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
-const navItems = [
-  { label: 'Home', href: '/dashboard', icon: Home },
-  { label: 'Customers', href: '/dashboard/customers', icon: Users },
-  { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart },
-  { label: 'Website', href: '/', icon: Globe },
-  { label: 'Settings', href: '/dashboard/settings', icon: Settings },
-]
-
-export default function Sidebar() {
+export default function Sidebar({
+  collapsed,
+  setCollapsed,
+  isMobileOpen,
+  setIsMobileOpen,
+}: {
+  collapsed: boolean
+  setCollapsed: (val: boolean) => void
+  isMobileOpen: boolean
+  setIsMobileOpen: (val: boolean) => void
+}) {
   const pathname = usePathname()
-  const { isOpen, toggle, close, collapsed, toggleCollapse } = useSidebar()
 
-  // Prevent background scroll when mobile sidebar is open
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : 'auto'
-  }, [isOpen])
+  const links = [
+    { label: 'Home', icon: <Home size={18} />, href: '/dashboard' },
+    { label: 'Customers', icon: <Users size={18} />, href: '/customers' },
+    { label: 'Reports', icon: <BarChart2 size={18} />, href: '/reports' },
+  ]
 
   return (
-    <>
-      {/* Backdrop on mobile */}
-      {isOpen && (
-        <div
-          onClick={close}
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
-        />
-      )}
+    <aside
+      className={`
+        fixed sm:relative top-0 left-0 z-40
+        h-screen sm:h-auto
+        bg-white shadow-md
+        transition-all duration-300
+        flex flex-col justify-between
+        ${collapsed ? 'w-20' : 'w-64'}
+        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'}
+      `}
+    >
+      <div>
+        {/* ✅ Top Brand Section with Mobile Close Icon */}
+        {isMobileOpen && (
+          <div className="sm:hidden flex justify-between items-center px-4 py-4">
+            <div className="flex items-center gap-2 px-4 h-16">
+              <Image
+                src="/logo/brand-logo.svg"
+                alt="Logo"
+                width={28}
+                height={28}
+              />
+              <span className="text-lg font-semibold">AC Ka Doctor</span>
+            </div>
+            <button onClick={() => setIsMobileOpen(false)}>
+              <X size={24} />
+            </button>
+          </div>
+        )}
 
-      {/* Sidebar Panel */}
-      <aside
-        className={`
-          fixed top-0 left-0 h-screen z-50 flex flex-col bg-blue-800 text-white
-          transition-all duration-300 rounded-r-2xl
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
-          md:translate-x-0 md:static md:z-auto
-          ${collapsed ? 'w-20' : 'w-60'}
-        `}
-      >
-        {/* Logo + Collapse Toggle */}
-        <div className="relative pt-4 pb-2 px-4 flex justify-center">
-          <img
-            src="/logo/brand-logo.svg"
-            alt="AC Ka Doctor"
-            className={`transition-all duration-300 ${
-              collapsed ? 'h-10 w-10' : 'h-20 w-auto'
-            }`}
-          />
+        {/* ✅ Desktop Brand Logo when expanded */}
+        {!collapsed && (
+          <div className="hidden sm:flex justify-center items-center gap-2 px-4 py-4">
+            <Image
+              src="/logo/brand-logo.svg"
+              alt="Logo"
+              width={50}
+              height={50}
+            />
+            <span className="text-lg font-semibold">AC Ka Doctor</span>
+          </div>
+        )}
 
-          {/* Collapse Button (Desktop Only) */}
-          <button
-  onClick={toggleCollapse}
-  className="hidden md:flex items-center justify-center absolute top-3/4 -right-0 
-     text-white-800 shadow-lg  z-999
-    hover: transition duration-200"
-  aria-label="Toggle Sidebar"
->
-  {collapsed ? <PanelLeftOpen size={24} /> : <PanelLeftClose size={24} />}
-</button>
+        {/* ✅ Collapsed Logo Only on Desktop */}
+        {collapsed && (
+          <div className="hidden sm:flex justify-center px-4 py-4">
+            <Image
+              src="/logo/brand-logo.svg"
+              alt="Logo"
+              width={40}
+              height={40}
+            />
+          </div>
+        )}
 
-        </div>
-
-        {/* Navigation Links */}
-        <nav className="flex-1 flex flex-col gap-1.5 px-2 mt-2">
-          {navItems.map(({ label, href, icon: Icon }) => {
-            const isActive = pathname === href
-            return (
-              <Link
-                key={href}
-                href={href}
-                onClick={close} // closes on mobile
-                className={`flex items-center ${
-                  collapsed ? 'justify-center' : 'gap-3'
-                } px-3 py-2 rounded-md transition-all duration-200 ${
-                  isActive
-                    ? 'bg-white text-blue-700 font-semibold'
-                    : 'hover:bg-blue-600'
-                }`}
-              >
-                <Icon size={20} className="shrink-0" />
-                {!collapsed && <span className="truncate">{label}</span>}
-              </Link>
-            )
-          })}
+        {/* ✅ Navigation */}
+        <nav className="flex flex-col gap-1 px-2 py-4">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
+                hover:bg-blue-50 transition-colors
+                ${pathname === link.href ? 'bg-blue-100 text-blue-600' : 'text-gray-700'}
+              `}
+            >
+              {link.icon}
+              {!collapsed && <span>{link.label}</span>}
+            </Link>
+          ))}
         </nav>
+      </div>
 
-        {/* Footer: Logout */}
-        <footer className="px-2 pb-6">
-          <Link
-            href="/logout"
-            onClick={close}
-            className={`flex items-center ${
-              collapsed ? 'justify-center' : 'gap-3'
-            } px-3 py-2 rounded-md hover:bg-blue-600 transition`}
-          >
-            <LogOut size={20} className="shrink-0" />
-            {!collapsed && <span>Logout</span>}
-          </Link>
-        </footer>
-      </aside>
-    </>
+      {/* ✅ Bottom Logout */}
+      <div className="p-2 border-t border-gray-300">
+        <button
+          className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 w-full rounded-md"
+          onClick={() => alert('Logout')}
+        >
+          <LogOut size={18} />
+          {!collapsed && <span>Logout</span>}
+        </button>
+      </div>
+    </aside>
   )
 }
