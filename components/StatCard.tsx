@@ -1,63 +1,62 @@
 'use client'
 
 import { ReactNode } from 'react'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 export interface StatCardProps {
   title: string
   label: string
   value: number
   icon: ReactNode
-  color: string // Tailwind color string e.g. 'blue', 'green'
-  data: number[] // For mini line chart
+  color: string
+  data: number[] // expects array of 7 numbers
 }
 
-export default function StatCard({
-  title,
-  label,
-  value,
-  icon,
-  color,
-  data,
-}: StatCardProps) {
-  // Generate SVG path string for mini chart
-  const generateMiniChartPath = () => {
-    if (!data || data.length === 0) return ''
+const dayMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-    const maxVal = Math.max(...data)
-    const minVal = Math.min(...data)
-    const height = 30
-    const width = 60
-    const step = width / (data.length - 1 || 1)
+// transform [120, 130, ...] to [{ day: 'Sun', value: 120 }, ...]
+const transformToChartData = (raw: number[]) =>
+  raw.map((value, index) => ({
+    day: dayMap[index],
+    value,
+  }))
 
-    return data
-      .map((point, i) => {
-        const x = i * step
-        const y = height - ((point - minVal) / (maxVal - minVal || 1)) * height
-        return `${i === 0 ? 'M' : 'L'}${x},${y}`
-      })
-      .join(' ')
-  }
+export default function StatCard({ title, label, value, icon, color, data }: StatCardProps) {
+  const chartData = transformToChartData(data)
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 flex items-center justify-between">
-      <div>
-        <h4 className="text-sm text-gray-500">{title}</h4>
-        <p className="text-xl font-semibold text-gray-800">{value}</p>
-        <p className="text-xs text-gray-400">{label}</p>
+    <div className="bg-white rounded-lg shadow p-4 flex flex-col justify-between h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h4 className="text-sm font-medium text-gray-600">{title}</h4>
+          <p className="text-2xl font-bold text-gray-900">{value}</p>
+        </div>
+        <div className="text-blue-500">{icon}</div>
       </div>
 
-      <div className="flex flex-col items-end gap-2">
-        <div className={`text-${color}-500`}>{icon}</div>
+      {/* Sub Label */}
+      <p className="text-xs text-gray-400 mt-2">{label}</p>
 
-        {/* Mini line chart */}
-        <svg width="60" height="30" viewBox="0 0 60 30" fill="none">
-          <path
-            d={generateMiniChartPath()}
-            stroke={`#3b82f6`} // optional: can derive from `color`
-            strokeWidth="2"
-            fill="none"
-          />
-        </svg>
+      {/* Chart */}
+      <div className="mt-2 h-24">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData}>
+            <XAxis dataKey="day" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis hide domain={[0, Math.max(...data) + 20]} />
+            <Tooltip
+              contentStyle={{ fontSize: '12px', borderRadius: '4px' }}
+              labelStyle={{ color: '#6b7280' }} // gray-500
+              cursor={{ fill: '#f3f4f6' }} // gray-100
+            />
+            <Bar
+              dataKey="value"
+              fill={color}
+              radius={[4, 4, 0, 0]}
+              animationDuration={400}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   )

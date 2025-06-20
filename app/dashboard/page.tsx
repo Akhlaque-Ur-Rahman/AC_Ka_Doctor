@@ -17,31 +17,41 @@ export default function DashboardPage() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <StatCard
-        title="Impressions"
-        label="Last 7 days"
-        value={impressions}
-        icon={<Eye size={20} />}
-        color="blue"
-        data={impressionsData}
-      />
+  title="Impressions"
+  label="Last 7 days"
+  value={739}
+  icon={<Eye size={20} className="text-blue-500" />}
+  color="#3B82F6" // Sky Blue for brand-safe, professional feel
+  data={impressionsData}
+/>
+
+
+
+
+
+
+
+
+
 
       <StatCard
-        title="Clicks"
-        label="Last 7 days"
-        value={clicks}
-        icon={<MousePointerClick size={20} />}
-        color="green"
-        data={clicksData}
-      />
+  title="Clicks"
+  label="Last 7 days"
+  value={739}
+  icon={<MousePointerClick size={20} />}
+  color="#6366F1" // Tailwind green-500
+  data={clicksData}
+/>
 
       <StatCard
-        title="Customers"
-        label="This month"
-        value={customers}
-        icon={<Users size={20} />}
-        color="purple"
-        data={customersData}
-      />
+  title="Customers"
+  label="Last 7 days"
+  value={92}
+  icon={<Users size={20} />}
+  color="#10B981"
+  data={customersData}
+/>
+
     </div>
   )
 }

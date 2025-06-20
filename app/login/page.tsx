@@ -1,11 +1,17 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import Image from 'next/image'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
+
+  const handleRedirect = () => {
+    router.push('/dashboard')
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -35,7 +41,7 @@ export default function LoginPage() {
           />
         </div>
 
-        {/* Password Input with Toggle */}
+        {/* Password Input */}
         <div className="relative mb-6">
           <Lock
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -55,8 +61,11 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {/* Submit Button */}
-        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md transition duration-200">
+        {/* Redirect Button */}
+        <button
+          onClick={handleRedirect}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md transition duration-200"
+        >
           Sign in
         </button>
 
