@@ -1,14 +1,14 @@
-// app/layout.tsx ✅ Server Component
+// app/layout.tsx
 import './globals.css'
-import { ReactNode } from 'react'
-import ClientLayout from '@/components/layout/ClientLayout'
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <body>
-        <ClientLayout>{children}</ClientLayout>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
