@@ -5,6 +5,7 @@ import StatCard from '@/components/StatCard'
 import RecentMessages from '@/components/RecentMessages'
 import { useSummaryStats } from '@/hooks/useSummaryStats'
 import StatCardGroup from '@/components/StatCardGroup'
+import ToDoList from '@/components/ToDoList'
 
 export default function DashboardPage() {
   const { stats, loading } = useSummaryStats()
@@ -23,7 +24,14 @@ export default function DashboardPage() {
       <StatCardGroup/>
 
       {/* Recent Messages Section */}
-      <RecentMessages />
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="lg:w-2/3 w-full">
+          <RecentMessages />
+        </div>
+        <div className="lg:w-1/3 w-full">
+          <ToDoList/>
+        </div>
+      </div>
     </div>
   )
 }
