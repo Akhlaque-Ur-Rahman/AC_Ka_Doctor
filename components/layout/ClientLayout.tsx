@@ -5,11 +5,11 @@ import Sidebar from './Sidebar'
 import Topbar from './Topbar'
 
 export default function ClientLayout({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false)        // For desktop sidebar collapse
-  const [isMobileOpen, setIsMobileOpen] = useState(false)  // For mobile sidebar drawer
+  const [collapsed, setCollapsed] = useState(false)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-gray-100 relative overflow-hidden">
+    <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         collapsed={collapsed}
@@ -17,7 +17,6 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
         isMobileOpen={isMobileOpen}
         setIsMobileOpen={setIsMobileOpen}
       />
-      
 
       {/* Mobile backdrop */}
       {isMobileOpen && (
@@ -28,16 +27,19 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
       )}
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-col flex-1 max-h-screen overflow-hidden">
         <Topbar
           collapsed={collapsed}
           setCollapsed={setCollapsed}
           isMobileOpen={isMobileOpen}
           setIsMobileOpen={setIsMobileOpen}
         />
-        <main className="p-4 flex-1 overflow-y-auto">{children}</main>
+
+        {/* Scrollable content below topbar only */}
+        <main className="flex-1 overflow-y-auto p-4">
+          {children}
+        </main>
       </div>
-      
     </div>
   )
 }
