@@ -1,6 +1,6 @@
 'use client'
 
-import { Home, Users, BarChart2, LogOut, X } from 'lucide-react'
+import { Home, Users, BarChart2, PieChart, LogOut, X } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -18,11 +18,12 @@ export default function Sidebar({
 }) {
   const pathname = usePathname()
 
-  const links = [
-    { label: 'Home', icon: <Home size={18} />, href: '/dashboard' },
-    { label: 'Customers', icon: <Users size={18} />, href: '/customers' },
-    { label: 'Reports', icon: <BarChart2 size={18} />, href: '/reports' },
-  ]
+ const links = [
+   { label: 'Home', icon: <Home size={18} />, href: '/dashboard' },
+   { label: 'Analytics', icon: <PieChart size={18} />, href: '/analytics' },
+   { label: 'Customers', icon: <Users size={18} />, href: '/customers' },
+   { label: 'Reports', icon: <BarChart2 size={18} />, href: '/reports' },
+]
 
   return (
     <aside
