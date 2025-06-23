@@ -18,45 +18,45 @@ export default function Sidebar({
 }) {
   const pathname = usePathname()
 
- const links = [
-   { label: 'Home', icon: <Home size={18} />, href: '/dashboard' },
-   { label: 'Analytics', icon: <PieChart size={18} />, href: '/analytics' },
-   { label: 'Customers', icon: <Users size={18} />, href: '/customers' },
-   { label: 'Reports', icon: <BarChart2 size={18} />, href: '/reports' },
-]
+  const links = [
+    { label: 'Home', icon: <Home size={18} />, href: '/dashboard' },
+    { label: 'Analytics', icon: <PieChart size={18} />, href: '/analytics' },
+    { label: 'Customers', icon: <Users size={18} />, href: '/customers' },
+    { label: 'Reports', icon: <BarChart2 size={18} />, href: '/reports' },
+  ]
 
   return (
     <aside
       className={`
         fixed sm:relative top-0 left-0 z-40
         h-screen sm:h-auto
-        bg-white shadow-md
+        bg-slate-900 text-slate-100
         transition-all duration-300
-        flex flex-col justify-between
+        flex flex-col justify-between shadow-md
         ${collapsed ? 'w-20' : 'w-64'}
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'}
       `}
     >
       <div>
-        {/* ✅ Top Brand Section with Mobile Close Icon */}
+        {/* 🔹 Top Brand Section for Mobile */}
         {isMobileOpen && (
           <div className="sm:hidden flex justify-between items-center px-4 py-4">
-            <div className="flex items-center gap-2 px-4 h-16">
+            <div className="flex items-center gap-2">
               <Image
                 src="/logo/brand-logo.svg"
                 alt="Logo"
                 width={28}
                 height={28}
               />
-              <span className="text-lg font-semibold">AC Ka Doctor</span>
+              <span className="text-lg font-semibold text-white">AC Ka Doctor</span>
             </div>
-            <button onClick={() => setIsMobileOpen(false)}>
+            <button onClick={() => setIsMobileOpen(false)} className="text-white">
               <X size={24} />
             </button>
           </div>
         )}
 
-        {/* ✅ Desktop Brand Logo when expanded */}
+        {/* 🔹 Desktop Brand Logo */}
         {!collapsed && (
           <div className="hidden sm:flex justify-center items-center gap-2 px-4 py-4">
             <Image
@@ -65,11 +65,11 @@ export default function Sidebar({
               width={50}
               height={50}
             />
-            <span className="text-lg font-semibold">AC Ka Doctor</span>
+            <span className="text-lg font-semibold text-white">AC Ka Doctor</span>
           </div>
         )}
 
-        {/* ✅ Collapsed Logo Only on Desktop */}
+        {/* 🔹 Collapsed Logo */}
         {collapsed && (
           <div className="hidden sm:flex justify-center px-4 py-4">
             <Image
@@ -81,15 +81,17 @@ export default function Sidebar({
           </div>
         )}
 
-        {/* ✅ Navigation */}
+        {/* 🔹 Navigation */}
         <nav className="flex flex-col gap-1 px-2 py-4">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
-                hover:bg-blue-50 transition-colors
-                ${pathname === link.href ? 'bg-blue-100 text-blue-600' : 'text-gray-700'}
+                transition-colors
+                ${pathname === link.href
+                  ? 'bg-slate-800 text-white'
+                  : 'text-slate-300 hover:bg-slate-800'}
               `}
             >
               {link.icon}
@@ -99,10 +101,10 @@ export default function Sidebar({
         </nav>
       </div>
 
-      {/* ✅ Bottom Logout */}
-      <div className="p-2 border-t border-gray-300">
+      {/* 🔹 Logout Button */}
+      <div className="p-2 border-t border-slate-700">
         <button
-          className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 w-full rounded-md"
+          className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-500 hover:bg-slate-800 w-full rounded-md"
           onClick={() => alert('Logout')}
         >
           <LogOut size={18} />
